@@ -1,0 +1,2 @@
+# BaiduChineseWordExplain
+一个爬虫，可以从百度汉语提取汉语字词拼音和解释
