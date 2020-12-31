@@ -2,7 +2,7 @@
   Author: Kingron
   Date: 2018-3-8
   从百度汉语字词，使用爬虫技术提取所有拼音和解释的js脚本。
-  支持Windows 7，双击可以直接运行，需要在程序目录放置"text.txt"文件， 输出结果保存在"text_out.txt"，输入文件格式为每一行一个字词。
+  支持Windows 7，双击可以直接运行，需要在程序目录放置"text.txt"文件， 输出结果保存在"text_out.txt"，输入文件格式为每一行一个字词，必须为ASCII码格式
 例如：
 舀
 揩
@@ -19,7 +19,7 @@ String.prototype.trim = function()
 }
 
 function get_text(word) {
-	var http = new ActiveXObject("Msxml2.XMLHTTP")
+	var http = new ActiveXObject("Msxml2.ServerXMLHTTP")
 	url = "http://hanyu.baidu.com/s?wd=" + word + '&ptype=zici';
 	url = encodeURI(url);
 	http.open("GET", url, false)
@@ -40,7 +40,7 @@ function get_text(word) {
 		else
 		{
 			ps = text.indexOf('<div class="pronounce" id="pinyin">');
-			if (start >=0) {
+			if (ps >=0) {
 				pe = text.indexOf('</b>', ps);
 				if (pe >=0) {
 					pinyin = text.substring(ps + 42, pe).trim().replace(/ /g, '').replace(/\n/g, '').replace(/<span><b>/g, '');
@@ -73,25 +73,23 @@ if (args.length == 0) WScript.Quit(-1);
 WScript.Echo(get_text(args(0)));
 */
 
+
 var fso = new ActiveXObject("Scripting.FileSystemObject");
-var infile = fso.OpenTextFile("text.txt", 1);
-var outfile = fso.OpenTextFile("text_out.txt", 2);
+var infile = fso.OpenTextFile("text.txt", 1, false);
+var outfile = fso.OpenTextFile("text_out.txt", 2, true);
 while (!infile.AtEndOfStream) {
 	word = infile.ReadLine();
 	word2 = word.trim();
 	if (word2 != '') { 
 		result = get_text(word2);
 		if (result != '') {
-			WScript.Echo(word + ": " + result);
 			outfile.WriteLine(word + ": " + result);
 		}
 		else {
-			WScript.Echo(word);
 			outfile.WriteLine(word);
 		}
 	}
 	else{ 
-		WScript.Echo(word);
 		outfile.WriteLine(word);
 	}
 }
